@@ -7,8 +7,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 # imports all the dependencies in the empty
 # database from SQLalchemy into the environment:
->>> from SQLalchemy import create_engine
->>> from SQLalchemy.orm import sessionmaker
+>>> from sqlalchemy import create_engine
+>>> from sqlalchemy.orm import sessionmaker
 >>> from database_setup import Base, Restaurant, MenuItem
 
 # lets the program know which database engine
@@ -112,55 +112,6 @@ u'Pizza Palace'
 ...
 
 # response, one item per line
-Cheese Pizza
-Veggie Burger
-French Fries
-Chicken Burger
-Chocolate Cake
-Sirloin Burger
-Root Beer
-Iced Tea
-Grilled Cheese Sandwich
-Veggie Burger
-Chicken Stir Fry
-Peking Duck
-Spicy Tuna Roll
-Nepali Momo
-Beef Noodle Soup
-Ramen
-Pho
-Chinese Dumplings
-Gyoza
-Stinky Tofu
-Veggie Burger
-Tres Leches Cake
-Mushroom risotto
-Honey Boba Shaved Snow
-Cauliflower Manchurian
-Aloo Gobi Burrito
-Veggie Burger
-Shellfish Tower
-Chicken and Rice
-Mom\'s Spaghetti
-Choc Full O\' Mint (Smitten\'s Fresh Mint Chip ice cream)
-Tonkatsu Ramen
-Lamb Curry
-Chicken Marsala
-Potstickers
-Nigiri Sampler
-Veggie Burger
-Chicken Fried Steak
-Boysenberry Sorbet
-Broiled salmon
-Morels on toast (seasonal)
-Tandoori Chicken
-Veggie Burger
-Spinach Ice Cream
-Super Burrito Al Pastor
-Cachapa
-Chantrelle Toast
-Guanciale Chawanmushi
-Lemon Curd Ice Cream Sandwich
 Veggie Burger
 French Fries
 Chicken Burger
@@ -231,27 +182,27 @@ Lemon Curd Ice Cream Sandwich
 ...
 
 # response
-2
+1
 $7.50
 Urban Burger
 
-10
+9
 $5.99
 Urban Burger
 
-21
+20
 $9.50
 Panda Garden
 
-27
+26
 $6.80
 Thyme for That Vegetarian Cuisine
 
-37
+36
 $7.00
 Andala\'s
 
-43
+42
 $9.50
 Auntie Ann\'s Diner
 
@@ -260,8 +211,8 @@ Auntie Ann\'s Diner
 # instead of a list that needs iterating over.
 
 # creates another query where it only returns
-# the menu item with an ID of '10'.
->>> UrbanVeggieBurger = session.query(MenuItem).filter_by(id = 10).one()
+# the menu item with an ID of '9'.
+>>> UrbanVeggieBurger = session.query(MenuItem).filter_by(id = 9).one()
 
 # checks if we've got the right burger
 >>> UrbanVeggieBurger.price
@@ -288,28 +239,32 @@ u'$5.99'
 ...     print veggieBurger.restaurant.name
 ...     print "\n"
 ...
-2
+1
 $7.50
 Urban Burger
 
-# this one was successfuly updated:
-10
+# this one was successfully updated
+9
 $2.99
 Urban Burger
 
-21
+
+20
 $9.50
 Panda Garden
 
-27
+
+26
 $6.80
 Thyme for That Vegetarian Cuisine
 
-37
+
+36
 $7.00
 Andala\'s
 
-43
+
+42
 $9.50
 Auntie Ann\'s Diner
 
@@ -331,34 +286,34 @@ Auntie Ann\'s Diner
 ...     print veggieBurger.restaurant.name
 ...     print "\n"
 ...
-2
+1
 $2.99
 Urban Burger
 
 
-10
+9
 $2.99
 Urban Burger
 
 
-21
+20
 $2.99
 Panda Garden
 
 
-27
+26
 $2.99
 Thyme for That Vegetarian Cuisine
 
 
-37
+36
 $2.99
 Andala\'s
 
 
-43
+42
 $2.99
-Auntie Ann\'s Diner
+Auntie Ann\'s Diner 
 
 # Deletes existing data within the database
 # following a three-step process:
