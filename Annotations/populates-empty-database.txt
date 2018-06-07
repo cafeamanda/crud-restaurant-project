@@ -1,0 +1,373 @@
+# Populates empty database with some information
+
+vagrant@vagrant:/vagrant/Restaurant Project$ python
+Python 2.7.12 (default, Dec  4 2017, 14:50:18)
+[GCC 5.4.0 20160609] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+
+# imports all the dependencies in the empty
+# database from SQLalchemy into the environment:
+>>> from SQLalchemy import create_engine
+>>> from SQLalchemy.orm import sessionmaker
+>>> from database_setup import Base, Restaurant, MenuItem
+
+# lets the program know which database engine
+# it wants to communicate with:
+>>> engine = create_engine('sqlite:///restaurantmenu.db')
+
+# binds the engine to the Base class
+# making the connections between the class
+# definitions and the corresponding tables
+# within the database:
+>>> Base.metadata.bind = engine
+
+# establishes a link of communication between
+# the code executions and the engine just
+# created:
+>>> DBSession = sessionmaker(bind = engine)
+
+# in order do create, read, update or delete
+# information on our database, SQLalchemy
+# executes database operations via an interface
+# called a "session".
+# a session allows writing down all the commands
+# one wants to execute but not send them to the
+# database until a commit is called.
+
+# creates an instance of a DBSession.
+>>> session = DBSession()
+
+# from now on, when making a change to the
+# database is necessary, simply call a method
+# from within `session`.
+# the DBSession object provides a staging zone
+# for all of the objects loaded into a database
+# session object.
+# meaning: any changes made to the objects in
+# the session won't be persisted into the
+# database until session.commit is called.
+
+# creates an instance of Restaurant class:
+>>> myFirstRestaurant = Restaurant(name = "Pizza Palace")
+
+# adds Restaurant object to the staging zone:
+>>> session.add(myFirstRestaurant)
+
+# stores Restaurant object to the database:
+>>> session.commit()
+
+# makes session go into the database, find the
+# table that corresponds to the Restaurant class
+# and find all the entries in that table and
+# return them in a list:
+>>> session.query(Restaurant).all()
+
+# this is the response:
+# it just let's us know that Python found a
+# restaurant in our database and represents it
+# as an object at this location in memory.
+[<database_setup.Restaurant object at 0x7fd35ee50e50>]
+
+# creates an instance of MenuItem class
+# and specifies a ForeignKey relationship to the
+# object name of the Restaurant instance created
+>>> cheesepizza = MenuItem(name = "Cheese Pizza", description = "Made with all natural ingredients and fresh mozzarella", course = "Entree", price = "$8.99", restaurant = myFirstRestaurant)
+
+# adds MenuItem object to the staging zone:
+>>> session.add(cheesepizza)
+
+# stores MenuItem object to the database:
+>>> session.commit()
+
+# finds all MenuItems
+>>> session.query(MenuItem).all()
+
+# response
+[<database_setup.MenuItem object at 0x7fd35ee50e10>]
+
+# stores in a variable that corresponds to a
+# single row in the database. these single row
+# references allow to extract column entries
+# as method names.
+>>> firstResult = session.query(Restaurant).first()
+
+# asks for property 'name' of firstResult
+>>> firstResult.name
+
+# response
+u'Pizza Palace'
+
+# at this point, the file LOTSOFMENUS.PY is
+# executed in a new tab of the terminal:
+# $ python lotsofmenus.py
+# it populates the database with lots of other
+# menu items and restaurants.
+
+# stores in a variable all menu items
+>>> items = session.query(MenuItem).all()
+
+# python for loop returns data
+>>> for item in items:
+...     print item.name
+...
+
+# response, one item per line
+Cheese Pizza
+Veggie Burger
+French Fries
+Chicken Burger
+Chocolate Cake
+Sirloin Burger
+Root Beer
+Iced Tea
+Grilled Cheese Sandwich
+Veggie Burger
+Chicken Stir Fry
+Peking Duck
+Spicy Tuna Roll
+Nepali Momo
+Beef Noodle Soup
+Ramen
+Pho
+Chinese Dumplings
+Gyoza
+Stinky Tofu
+Veggie Burger
+Tres Leches Cake
+Mushroom risotto
+Honey Boba Shaved Snow
+Cauliflower Manchurian
+Aloo Gobi Burrito
+Veggie Burger
+Shellfish Tower
+Chicken and Rice
+Mom\'s Spaghetti
+Choc Full O\' Mint (Smitten\'s Fresh Mint Chip ice cream)
+Tonkatsu Ramen
+Lamb Curry
+Chicken Marsala
+Potstickers
+Nigiri Sampler
+Veggie Burger
+Chicken Fried Steak
+Boysenberry Sorbet
+Broiled salmon
+Morels on toast (seasonal)
+Tandoori Chicken
+Veggie Burger
+Spinach Ice Cream
+Super Burrito Al Pastor
+Cachapa
+Chantrelle Toast
+Guanciale Chawanmushi
+Lemon Curd Ice Cream Sandwich
+Veggie Burger
+French Fries
+Chicken Burger
+Chocolate Cake
+Sirloin Burger
+Root Beer
+Iced Tea
+Grilled Cheese Sandwich
+Veggie Burger
+Chicken Stir Fry
+Peking Duck
+Spicy Tuna Roll
+Nepali Momo
+Beef Noodle Soup
+Ramen
+Pho
+Chinese Dumplings
+Gyoza
+Stinky Tofu
+Veggie Burger
+Tres Leches Cake
+Mushroom risotto
+Honey Boba Shaved Snow
+Cauliflower Manchurian
+Aloo Gobi Burrito
+Veggie Burger
+Shellfish Tower
+Chicken and Rice
+Mom\'s Spaghetti
+Choc Full O\' Mint (Smitten\'s Fresh Mint Chip ice cream)
+Tonkatsu Ramen
+Lamb Curry
+Chicken Marsala
+Potstickers
+Nigiri Sampler
+Veggie Burger
+Chicken Fried Steak
+Boysenberry Sorbet
+Broiled salmon
+Morels on toast (seasonal)
+Tandoori Chicken
+Veggie Burger
+Spinach Ice Cream
+Super Burrito Al Pastor
+Cachapa
+Chantrelle Toast
+Guanciale Chawanmushi
+Lemon Curd Ice Cream Sandwich
+
+# Updates existing data within the database
+# following a four-step process:
+# 1. Execute a query to find the entry and store
+#    it in a variable
+# 2. Reset the values of the variable
+# 3. Add the variable to the session
+# 4. Commit the session to the database
+>>> veggieBurgers = session.query(MenuItem).filter_by(name = 'Veggie Burger')
+
+# the filter_by function always returns a
+# collection of objects. to get every result,
+# create a for loop to iterate over each object
+# and retrieve the desired information.
+>>> for veggieBurger in veggieBurgers:
+...     print veggieBurger.id
+...     print veggieBurger.price
+...     print veggieBurger.restaurant.name
+...     print "\n"
+...
+
+# response
+2
+$7.50
+Urban Burger
+
+10
+$5.99
+Urban Burger
+
+21
+$9.50
+Panda Garden
+
+27
+$6.80
+Thyme for That Vegetarian Cuisine
+
+37
+$7.00
+Andala\'s
+
+43
+$9.50
+Auntie Ann\'s Diner
+
+# if .one() is appended to the end of the query,
+# SQLalchemy only returns the desired object
+# instead of a list that needs iterating over.
+
+# creates another query where it only returns
+# the menu item with an ID of '10'.
+>>> UrbanVeggieBurger = session.query(MenuItem).filter_by(id = 10).one()
+
+# checks if we've got the right burger
+>>> UrbanVeggieBurger.price
+u'$5.99'
+
+# resets the price to $2.99
+>>> UrbanVeggieBurger.price = '$2.99'
+
+# adds changes to session
+>>> session.add(UrbanVeggieBurger)
+
+# commits session to database
+>>> session.commit()
+
+# executes a query to find the entries and stores
+# them in a variable
+>>> veggieBurgers = session.query(MenuItem).filter_by(name = 'Veggie Burger')
+
+# creates a for loop to iterate over each object
+# and retrieve the desired information.
+>>> for veggieBurger in veggieBurgers:
+...     print veggieBurger.id
+...     print veggieBurger.price
+...     print veggieBurger.restaurant.name
+...     print "\n"
+...
+2
+$7.50
+Urban Burger
+
+# this one was successfuly updated:
+10
+$2.99
+Urban Burger
+
+21
+$9.50
+Panda Garden
+
+27
+$6.80
+Thyme for That Vegetarian Cuisine
+
+37
+$7.00
+Andala\'s
+
+43
+$9.50
+Auntie Ann\'s Diner
+
+# in a single for loop, changes the prices of all
+# the veggie burgers.
+>>> for veggieBurger in veggieBurgers:
+        # this 'if' statement avoids unnecessary
+        # database updates:
+...     if veggieBurger.price != '$2.99':
+...             veggieBurger.price = '$2.99'
+...             session.add(veggieBurger)
+...             session.commit()
+...
+
+# print out all of the results again.
+>>> for veggieBurger in veggieBurgers:
+...     print veggieBurger.id
+...     print veggieBurger.price
+...     print veggieBurger.restaurant.name
+...     print "\n"
+...
+2
+$2.99
+Urban Burger
+
+
+10
+$2.99
+Urban Burger
+
+
+21
+$2.99
+Panda Garden
+
+
+27
+$2.99
+Thyme for That Vegetarian Cuisine
+
+
+37
+$2.99
+Andala\'s
+
+
+43
+$2.99
+Auntie Ann\'s Diner
+
+# Deletes existing data within the database
+# following a three-step process:
+# 1. Execute a query to find the entry and store
+#    it in a variable
+# 2. Execute session.delete(entry)
+# 3. Commit the session to the database
+>>> spinach = session.query(MenuItem).filter_by(name = 'Spinach Ice Cream').one()
+>>> print spinach.restaurant.name
+Auntie Ann\'s Diner
+>>> session.delete(spinach)
+>>> session.commit()
