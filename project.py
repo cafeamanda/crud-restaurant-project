@@ -24,7 +24,7 @@ def restaurantMenu(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>/new/', methods=['GET', 'POST'])
 def newMenuItem(restaurant_id):
     if request.method == 'POST':
-        newItem = MenuItem(name = request.form['name'], restaurant_id = restaurant_id)
+        newItem = MenuItem(name=request.form['name'], description=request.form['description'], price=request.form['price'], course=request.form['course'], restaurant_id=restaurant_id)
         session.add(newItem)
         session.commit()
         flash("New menu item created!")
@@ -38,7 +38,13 @@ def editMenuItem(restaurant_id, menu_id):
     editedItem = session.query(MenuItem).filter_by(id = menu_id).one()
     if request.method == 'POST':
         if request.form['name']:
-                editedItem.name = request.form['name']
+            editedItem.name = request.form['name']
+        if request.form['description']:
+            editedItem.description = request.form['description']
+        if request.form['price']:
+            editedItem.price = request.form['price']
+        if request.form['course']:
+            editedItem.course = request.form['course']
         session.add(editedItem)
         session.commit()
         flash("Menu item has been edited!")
